@@ -4,15 +4,18 @@
  */
 public class DataTransfer {
 
-	public static boolean obstacleDetected = false;
-	private static int status = 1;
-	private static int round = 0;
+	public boolean obstacleDetected = false;
+	public int status = 1;
+	private int round = 0;
+	
+	
+	//private static boolean lineDetected = false;
 
 	/**
 	 * Method that checks boolean value of obstacleDetected
 	 *
 	 */
-	public static boolean isObstacleDetected() {
+	public boolean isObstacleDetected() {
 		return obstacleDetected;
 	}
 
@@ -20,15 +23,15 @@ public class DataTransfer {
 	 * Method that sets boolean value to obstacleDetected
 	 *
 	 */
-	public static void setObstacleDetected(boolean obstacleDetected) {
-		DataTransfer.obstacleDetected = obstacleDetected;
+	public void setObstacleDetected(boolean obstacleDetected) {
+		this.obstacleDetected = obstacleDetected;
 	}
 
 	/**
 	 * Method that gets status int value
 	 *
 	 */
-	public static int getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
@@ -36,15 +39,15 @@ public class DataTransfer {
 	 * Method that sets int value of status
 	 *
 	 */
-	public static void setStatus(int status) {
-		DataTransfer.status = status;
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	/**
 	 * Method that gets round int value
 	 *
 	 */
-	public static int getRound() {
+	public int getRound() {
 		return round;
 	}
 
@@ -52,7 +55,7 @@ public class DataTransfer {
 	 * Method that sets int value of status
 	 *
 	 */
-	public static void setRound(int round) {
-		DataTransfer.round = round;
+	public void setRound(int round) {
+		this.round = round;
 	}
 }
