@@ -12,7 +12,7 @@ import lejos.robotics.SampleProvider;
 public class ObstacleDetector implements Runnable {
 
 	private static EV3UltrasonicSensor us;
-	private static final int securityDistance = 30;
+	private static final int securityDistance = 20;
 	private static int distanceValue = 0;
 
 	private DataTransfer DTObj;
@@ -27,10 +27,10 @@ public class ObstacleDetector implements Runnable {
 	 *
 	 **/
 	public void run() {
-		System.out.println("obstacle detector");
+		//System.out.println("obstacle detector");
 
 		while (DTObj.getStatus() == 1) {
-			System.out.println("Obstacle Detector in while " + DTObj.getStatus());
+			//System.out.println("Obstacle Detector in while " + DTObj.getStatus());
 			// if (getRange() > securityDistance) {
 			//
 			// //DataTransfer.setStatus(1);
@@ -40,9 +40,9 @@ public class ObstacleDetector implements Runnable {
 			if (getRange() < securityDistance) {
 
 				DTObj.setStatus(0);
-				System.out.println("Obstacle Detector: " + DTObj.getStatus());
+				//System.out.println("Obstacle Detector: " + DTObj.getStatus());
 				DTObj.setObstacleDetected(true);
-				System.out.println("Obstacle detected set to true");
+				//System.out.println("Obstacle detected set to true");
 			}
 //					if (Button.getButtons() != 0) {
 //						break;
