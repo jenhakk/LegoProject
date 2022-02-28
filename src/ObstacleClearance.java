@@ -1,4 +1,3 @@
-import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.*;
 import lejos.hardware.sensor.*;
@@ -14,16 +13,7 @@ import lejos.utility.Delay;
  **/
 public class ObstacleClearance implements Runnable {
 
-	// private static EV3LargeRegulatedMotor motorR = new
-	// EV3LargeRegulatedMotor(MotorPort.A);
-	// private static EV3LargeRegulatedMotor motorL = new
-	// EV3LargeRegulatedMotor(MotorPort.B);
 
-	// private static EV3ColorSensor cs = new EV3ColorSensor(SensorPort.S3);
-	// private static EV3UltrasonicSensor us = new
-	// EV3UltrasonicSensor(SensorPort.S4);
-
-	private static boolean immediateReturn;
 	private static int status = 0;
 	private static int obsCount = 0;
 	private DataTransfer DTObj;
@@ -52,8 +42,6 @@ public class ObstacleClearance implements Runnable {
 			while (DTObj.isObstacleDetected() == true) {
 				System.out.println("Obstacle clearance");
 
-				// LineDetected t‰h‰n? Pys‰ytt‰m‰‰n arcin?
-//			if (DTObj.isLineDetected() == false) {
 				chassis.setLinearSpeed(50);
 				chassis.rotate(-45);
 				Delay.msDelay(800);
@@ -63,7 +51,7 @@ public class ObstacleClearance implements Runnable {
 				chassis.setLinearSpeed(50);
 				chassis.rotate(-60);
 				chassis.waitComplete();
-
+				
 				if (DTObj.isLineDetected() == false) {
 					System.out.println("line detected false");
 					LFObj.searchLine();

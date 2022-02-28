@@ -103,11 +103,14 @@ public class LineFollower implements Runnable {
 					motorL.forward();
 				}
 
-			} else {
+			}
+
+			else {
 				motorR.stop();
 				motorL.stop();
 			}
 		}
+
 	}
 
 	/**
