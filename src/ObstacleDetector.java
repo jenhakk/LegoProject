@@ -5,6 +5,7 @@ import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.*;
 import lejos.robotics.SampleProvider;
 
+
 /**
  * Class where obstacles are being detected by the ultrasonic sensor.
  *
@@ -42,7 +43,8 @@ public class ObstacleDetector implements Runnable {
 				DTObj.setStatus(0);
 				//System.out.println("Obstacle Detector: " + DTObj.getStatus());
 				DTObj.setObstacleDetected(true);
-				//System.out.println("Obstacle detected set to true");
+				System.out.println("Obstacle detected set to true");
+				
 			}
 //					if (Button.getButtons() != 0) {
 //						break;

@@ -14,6 +14,8 @@ public class RoboRun {
 		ObstacleDetector ODObj = new ObstacleDetector(DT);
 		ObstacleClearance OCObj = new ObstacleClearance(DT, LFObj);
 		
+		DataTransfer DTObj;
+		
 
 		System.out.println("Press Enter to start");
 		Button.ENTER.waitForPress();
@@ -37,5 +39,7 @@ public class RoboRun {
 		}
 
 	}
+	
+	
 
 }

@@ -23,18 +23,17 @@ public class ObstacleClearance implements Runnable {
 	// private static EV3UltrasonicSensor us = new
 	// EV3UltrasonicSensor(SensorPort.S4);
 
-	
 	private static boolean immediateReturn;
 	private static int status = 0;
-	private static int round = 0;
+	private static int obsCount = 0;
 	private DataTransfer DTObj;
 	private LineFollower LFObj;
-	
+
 	Wheel left = WheeledChassis.modelWheel(LineFollower.motorL, 55).offset(50);
 	Wheel right = WheeledChassis.modelWheel(LineFollower.motorR, 55).offset(-50);
 
 	Chassis chassis = new WheeledChassis(new Wheel[] { left, right }, WheeledChassis.TYPE_DIFFERENTIAL);
-	MovePilot pilot = new MovePilot(chassis);
+	// MovePilot pilot = new MovePilot(chassis);
 
 	public ObstacleClearance(DataTransfer DT, LineFollower LF) {
 		this.DTObj = DT;
@@ -49,43 +48,55 @@ public class ObstacleClearance implements Runnable {
 	public void run() {
 
 		while (true) {
-			// System.out.println("Obstacle clearance");
 
-			//LineDetected t‰h‰n? Pys‰ytt‰m‰‰n arcin?
-			if (DTObj.isObstacleDetected() == true) {
+			while (DTObj.isObstacleDetected() == true) {
+				System.out.println("Obstacle clearance");
 
-				// Delay.msDelay(800);
-				// rotate ja toinen delay hyv‰
-				// LFObj.motorR.rotateTo(300);
-				// Delay.msDelay(800);
-				while (!pilot.isMoving())Thread.yield();
-				pilot.setAngularSpeed(50);
-				pilot.rotate(-45);
+				// LineDetected t‰h‰n? Pys‰ytt‰m‰‰n arcin?
+//			if (DTObj.isLineDetected() == false) {
+				chassis.setLinearSpeed(50);
+				chassis.rotate(-45);
 				Delay.msDelay(800);
-				pilot.setLinearSpeed(120);
-				pilot.arc(260, 120);
-				
-				
-				//System.out.println("rotate tehty");
-				//pilot.setLinearSpeed(100);
-				//System.out.println("linear speed tehty");
-				// pit‰‰ viilata mihin kohtaan pys‰htyy kierroksen j‰lkeen, j‰lkimm‰inen arvo
-				//
-				
-				
-				System.out.println("arc tehty");
+				chassis.setLinearSpeed(95);
+				chassis.arc(340, 90);
+				chassis.waitComplete();
+				chassis.setLinearSpeed(50);
+				chassis.rotate(-60);
+				chassis.waitComplete();
+
+				if (DTObj.isLineDetected() == false) {
+					System.out.println("line detected false");
+					LFObj.searchLine();
+					break;
+				}
+			}
+			DTObj.setObstacleDetected(false);
+			DTObj.setObsCount(1);
+			DTObj.setStatus(1);
+//			}
+//
+//			else if (DTObj.isLineDetected() == true) {
+//				System.out.println("Line Detected true");
+//
+//				DTObj.setObstacleDetected(false);
+//
+//				DTObj.setStatus(1);
+//			}
+
+			// Delay.msDelay(800);
+			// rotate ja toinen delay hyv‰
+			// LFObj.motorR.rotateTo(300);
+			// Delay.msDelay(800);
+
+			// System.out.println("rotate tehty");
+			// pilot.setLinearSpeed(100);
+			// System.out.println("linear speed tehty");
+			// pit‰‰ viilata mihin kohtaan pys‰htyy kierroksen j‰lkeen, j‰lkimm‰inen arvo
+			//
+
 //				pilot.setAngularSpeed(50);
 //				pilot.rotate(-45);
-				
-				//T‰m‰ pit‰‰ siirt‰‰ johonkin muuhun tai tehd‰ jotain muuta!
-				//DTObj.setObstacleDetected(false);
-
-				// DTObj.setStatus(1);
-
-			}
 
 		}
 	}
-
-	
 }

@@ -29,6 +29,7 @@ public class LineFollower implements Runnable {
 	// 30 toimii myös sisäradalla, mutta vähän huonommin kuin ulkokaarella
 	private static int tooWhite = 26;
 	private static int fastest = 250;
+	private static int round = 0;
 
 	public LineFollower(DataTransfer DT) {
 		this.DTObj = DT;
@@ -50,31 +51,36 @@ public class LineFollower implements Runnable {
 		cs.setCurrentMode("Red");
 
 		// value in RGBs, 0 means zero light, 255 means maximum light
-		//System.out.println("hello");
+		// System.out.println("hello");
 		sample = new float[cs.sampleSize()];
 
 		// System.out.println("Push any button to start");
 		// Button.waitForAnyPress();
 
-		//System.out.println("LineFollower " + DTObj.getStatus());
+		// System.out.println("LineFollower " + DTObj.getStatus());
 
 		while (true) {
-			//System.out.println(getRed());
+			// System.out.println(getRed());
 			if (DTObj.getStatus() == 1) {
+
+				if (DTObj.getObsCount() > 0 && round == 0) {
+
+					System.out.println("HELLUREI, TOKA KIERROS");
+					motorR.setSpeed(150);
+					motorL.setSpeed(150);
+					motorR.forward();
+					motorL.forward();
+					Delay.msDelay(500);
+					round++;
+				}
+
+				System.out.println("MOI LINEFOLLOWER");
 				// Aloitus ulkoreunan puolelta
 				// Kun robo menee viivan rajalla 50/50 ja eksyy valkoiselle liikaa, korjataan
 				// vasemmalle
 
 				if (getRed() >= tooWhite) {
 
-					//motorR.setSpeed(230);
-					//motorL.setSpeed(230);
-					//motorL.forward();
-					//motorR.forward();
-					// motorL.flt();
-					// motorL.stop();
-
-					// ensin 40, toimii tökkivästi
 					motorL.setSpeed(145);
 					motorR.setSpeed(fastest);
 					motorL.forward();
@@ -85,22 +91,11 @@ public class LineFollower implements Runnable {
 					// oikealle
 				} else if (getRed() <= tooBlack) {
 
-//					motorR.setSpeed(230);
-//					motorL.setSpeed(230);
-//					motorL.forward();
-//					motorR.forward();
-//					motorR.flt();
-					// motorR.stop();
-
-					// ensin 40, toimii tökkivästi
-					// motorL.setSpeed(60);
-					// motorL.forward();
 					motorR.setSpeed(145);
 					motorL.setSpeed(fastest);
 					motorR.forward();
 					motorL.forward();
 
-					// Väli 4-31 -> skaala 27
 				} else {
 					motorR.setSpeed(250);
 					motorL.setSpeed(250);
@@ -108,9 +103,6 @@ public class LineFollower implements Runnable {
 					motorL.forward();
 				}
 
-//				if (Button.getButtons() != 0) {
-//					break;
-//				}
 			} else {
 				motorR.stop();
 				motorL.stop();
@@ -130,6 +122,54 @@ public class LineFollower implements Runnable {
 
 		return value;
 
+	}
+
+	public boolean detectLine() {
+		boolean detectLine = false;
+
+		if (getRed() < 5) {
+			DTObj.setLineDetected(true);
+
+		} else {
+			DTObj.setLineDetected(false);
+		}
+
+		return detectLine;
+
+	}
+
+	public void searchLine() {
+
+		while (true) {
+
+			System.out.println(getRed());
+			// Aloitus ulkoreunan puolelta
+			// Kun robo menee viivan rajalla 50/50 ja eksyy valkoiselle liikaa, korjataan
+			// vasemmalle
+
+			if (getRed() >= 6) {
+
+				System.out.println("HEI");
+				motorL.setSpeed(52);
+				motorR.setSpeed(80);
+				motorL.forward();
+				motorR.forward();
+
+				// Aloitus ulkoreunan puolelta
+				// Kun robo menee viivan rajalla 50/50 ja eksyy liikaa mustalle, korjataan
+				// oikealle
+			} else {
+
+//			motorR.setSpeed(52);
+//			motorL.setSpeed(80);
+//			motorR.forward();
+//			motorL.forward();
+				DTObj.setLineDetected(true);
+				System.out.println("line detected true");
+
+			}
+			break;
+		}
 	}
 
 }
