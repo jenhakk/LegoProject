@@ -28,23 +28,24 @@ public class ObstacleDetector implements Runnable {
 	 **/
 	public void run() {
 		// System.out.println("obstacle detector");
+		while (true) {
 
-		while (DTObj.getStatus() == 1) {
-			// System.out.println("Obstacle Detector in while " + DTObj.getStatus());
-			// if (getRange() > securityDistance) {
-			// DTObj.setStatus(1);
+			while (DTObj.getStatus() == 1) {
+				// System.out.println("Obstacle Detector in while " + DTObj.getStatus());
+				if (getRange() > securityDistance) {
+					DTObj.setObstacleDetected(false);
 
-			if (getRange() < securityDistance) {
+				} else if (getRange() < securityDistance) {
 
-				DTObj.setStatus(0);
-				// System.out.println("Obstacle Detector: " + DTObj.getStatus());
-				DTObj.setObstacleDetected(true);
-				System.out.println("Obstacle detected");
+					DTObj.setStatus(0);
+					// System.out.println("Obstacle Detector: " + DTObj.getStatus());
+					DTObj.setObstacleDetected(true);
+					System.out.println("Obstacle detected");
+
+				}
 
 			}
-
 		}
-
 	}
 
 	/**
