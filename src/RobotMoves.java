@@ -6,6 +6,7 @@ import lejos.robotics.Color;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 
 public class RobotMoves implements Runnable {
@@ -18,7 +19,8 @@ public class RobotMoves implements Runnable {
 	Wheel right = WheeledChassis.modelWheel(motorR, 55).offset(-50);
 
 	Chassis chassis = new WheeledChassis(new Wheel[] { left, right }, WheeledChassis.TYPE_DIFFERENTIAL);
-
+		
+	MovePilot pilot = new MovePilot(chassis);
 
 	private static float[] sample;
 	private DataTransfer DTObj;
@@ -96,7 +98,7 @@ public class RobotMoves implements Runnable {
 				} else {
 					motorR.stop();
 					motorL.stop();
-					System.exit(0);
+					//System.exit(0);
 					
 				}
 				
@@ -173,7 +175,7 @@ public class RobotMoves implements Runnable {
 	public boolean detectLine() {
 		boolean detectLine = false;
 
-		if (getRed() <= tooBlack) {
+		if (getRed() <= 9) {
 			DTObj.setLineDetected(true);
 			detectLine = true;
 
@@ -196,9 +198,11 @@ public class RobotMoves implements Runnable {
 			chassis.setAngularSpeed(60);
 			chassis.rotate(-70);
 			Delay.msDelay(1500);
-			chassis.setLinearSpeed(95);
-			chassis.arc(340, 78);
-			chassis.waitComplete();
+//			chassis.setLinearSpeed(95);
+//			chassis.arc(340, 78);
+//			chassis.waitComplete();
+			pilot.setLinearSpeed(95);
+			pilot.arc(340, 130, detectLine());
 			System.out.println("este ohitettu");
 			DTObj.setObstacleDetected(false);
 			break;
