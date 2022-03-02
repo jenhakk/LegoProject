@@ -19,7 +19,6 @@ public class RobotMoves implements Runnable {
 	Wheel wheel2 = WheeledChassis.modelWheel(motorL, 81.6).offset(70);
 	//ChassisWhe chassis = new ChassisWhe(motorR,motorL);
 	ChassisWhe chassis = new ChassisWhe(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
-	MovePilot chas = new MovePilot(chassis);
 	private static float[] sample;
 	private DataTransfer DTObj;
 
@@ -96,7 +95,7 @@ public class RobotMoves implements Runnable {
 					System.out.println("päästiinkö eteenpäin?");
 					chassis.setLinearSpeed(50);
 					chassis.rotate(-60);
-					chassis.waitComplete();
+					//chassis.waitComplete();
 
 					DTObj.setStatus(1);
 
@@ -153,7 +152,7 @@ public class RobotMoves implements Runnable {
 		Delay.msDelay(1500);
 		chassis.setLinearSpeed(95);
 		chassis.arc(340, 120);
-		chassis.waitComplete();
+		//chassis.waitComplete();
 		System.out.println("este kierretty");
 		DTObj.setObstacleDetected(false);
 

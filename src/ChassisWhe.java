@@ -111,12 +111,14 @@ public class ChassisWhe extends WheeledChassis {
 	public void arc(double radius, double angle) {
 		if (DTObj.isLineDetected() == true) {
 
-			RM.chas.rotate(-40);
+			//RM.chas.rotate(-40);
+			RM.chassis.rotate(-40);
 		}
 
 		if (DTObj.isLineDetected() == false) {
 
-			RM.chas.rotate(80);
+			//RM.chas.rotate(80);
+			RM.chassis.rotate(80);
 
 		}
 
