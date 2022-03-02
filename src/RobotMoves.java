@@ -18,7 +18,7 @@ public class RobotMoves implements Runnable {
 	Wheel right = WheeledChassis.modelWheel(motorR, 55).offset(-50);
 
 	Chassis chassis = new WheeledChassis(new Wheel[] { left, right }, WheeledChassis.TYPE_DIFFERENTIAL);
-	Chassis chassis2 = new WheeledChassis(new Wheel[] { left, right }, WheeledChassis.TYPE_DIFFERENTIAL);
+
 
 	private static float[] sample;
 	private DataTransfer DTObj;
@@ -30,8 +30,8 @@ public class RobotMoves implements Runnable {
 	// ensin 33, k‰vi liikaa valkoisella, logiikka toimii kuitenkin, tˆkkiv‰sti
 	// 30 toimii myˆs sis‰radalla, mutta v‰h‰n huonommin kuin ulkokaarella
 	private static double tooWhite = 26;
-	//ulkoreunan vauhti 250, sis‰reunan vauhti
-	private static int fastest = 230;
+	//ulkoreunan vauhti 250, sis‰reunan vauhti 230
+	private static int fastest = 250;
 	private static int round = 0;
 
 	public RobotMoves(DataTransfer DT) {
@@ -61,8 +61,8 @@ public class RobotMoves implements Runnable {
 
 					//ulkoreuna -> korjataan vasemmalle motorL.setSpeed(145), motorR.setSpeed(fastest)
 					//sis‰reuna -> korjataan oikealle motorR.setSpeed(130), motorL.setSpeed(fastest)
-					motorR.setSpeed(130);
-					motorL.setSpeed(fastest);
+					motorL.setSpeed(145);
+					motorR.setSpeed(fastest);
 					motorL.forward();
 					motorR.forward();
 
@@ -73,8 +73,8 @@ public class RobotMoves implements Runnable {
 
 					//ulkoreuna -> korjataan oikealle motorR.setSpeed(145), motorL.setSpeed(fastest)
 					//sis‰reuna -> korjataan vasemmalle motorL.setSpeed(130), motorR.setSpeed(fastest)
-					motorL.setSpeed(130);
-					motorR.setSpeed(fastest);
+					motorR.setSpeed(145);
+					motorL.setSpeed(fastest);
 					motorR.forward();
 					motorL.forward();
 
@@ -88,7 +88,18 @@ public class RobotMoves implements Runnable {
 				// Jos status on 0 ja este havaittu, kierr‰ este
 			} else if (DTObj.getStatus() == 0 && DTObj.isObstacleDetected() == true) {
 				// 3. SIIRRYTƒƒN METODIIN
-				clearObstacle(round);
+				
+				if (round == 0) {
+					clearObstacle();
+					round++;
+					
+				} else {
+					motorR.stop();
+					motorL.stop();
+					System.exit(0);
+					
+				}
+				
 
 				// 4. KATSOTAAN METODILLA OLLAANKO VIIVALLA, KOTONA EI OLTU :D
 				detectLine();
@@ -106,28 +117,28 @@ public class RobotMoves implements Runnable {
 					motorR.forward();
 					motorL.forward();
 					System.out.println("onko vauhti 50?");
-					chassis2.setLinearSpeed(50);
+//					chassis2.setLinearSpeed(50);
 					//ulkoreuna
 					//chassis.rotate(-80);
 					//sis‰reuna
-					chassis2.rotate(80);
-					chassis2.waitComplete();
+//					chassis2.rotate(80);
+//					chassis2.waitComplete();
 					// DTObj.setStatus(1);
 
 					// 5. VAAN HYPƒTTIIN SUORAAN TƒHƒN -> searchLine()
 					// jos viivaa ei ole havaittu, etsi viivaa searchLine() metodilla
 				} else {
 					System.out.println("ollaanko searchissa?");
-					chassis2.setLinearSpeed(50);
+//					chassis2.setLinearSpeed(50);
 					//ulkoreuna
 					//chassis.rotate(-60);
 					//sis‰reuna
-					chassis2.rotate(60);
-					chassis2.waitComplete();
+//					chassis2.rotate(60);
+//					chassis2.waitComplete();
 					searchLine();
 				}
 
-			} else if (round > 0) {
+			} else {
 				
 				motorR.stop();
 				motorL.stop();
@@ -176,33 +187,34 @@ public class RobotMoves implements Runnable {
 	}
 
 	// 3. JATKUU KUNNES ESTE ON KIERRETTY
-	public void clearObstacle(int round) {
+	public void clearObstacle() {
 		// Tehd‰‰n kaari ja asetetaan obstacleDetected > false
 
 		while (detectLine() == false) {
-//			System.out.println("este");
-//			chassis.setAngularSpeed(60);
-//			chassis.rotate(-70);
-//			Delay.msDelay(1500);
-//			chassis.setLinearSpeed(95);
-//			chassis.arc(340, 78);
-//			chassis.waitComplete();
-//			System.out.println("este ohitettu");
-//			DTObj.setObstacleDetected(false);
-//			break;
-			
+			//ulkoreuna
 			System.out.println("este");
 			chassis.setAngularSpeed(60);
-			chassis.rotate(45);
+			chassis.rotate(-70);
 			Delay.msDelay(1500);
 			chassis.setLinearSpeed(95);
-			chassis.arc(-340, 78);
+			chassis.arc(340, 78);
 			chassis.waitComplete();
 			System.out.println("este ohitettu");
 			DTObj.setObstacleDetected(false);
-			
-			round++;
 			break;
+			
+			//sis‰reuna
+//			System.out.println("este");
+//			chassis.setAngularSpeed(60);
+//			chassis.rotate(45);
+//			Delay.msDelay(1500);
+//			chassis.setLinearSpeed(95);
+//			chassis.arc(-340, 78);
+//			chassis.waitComplete();
+//			System.out.println("este ohitettu");
+//			DTObj.setObstacleDetected(false);
+			
+//			break;
 			
 			
 			
@@ -236,19 +248,19 @@ public class RobotMoves implements Runnable {
 			} else if (DTObj.isLineDetected() == false) {
 				System.out.println("ei");
 				// k‰‰ntyy vasemmalle
-				motorL.setSpeed(50);
+				motorL.setSpeed(35);
 				motorR.setSpeed(100);
 				motorL.forward();
 				motorR.forward();
-				Delay.msDelay(1000);
+				Delay.msDelay(1500);
 
 				if (detectLine() == false) {
 					// k‰‰ntyy oikealle
-					motorR.setSpeed(50);
+					motorR.setSpeed(35);
 					motorL.setSpeed(100);
 					motorL.forward();
 					motorR.forward();
-					Delay.msDelay(1000);
+					Delay.msDelay(2250);
 
 				}
 			}
