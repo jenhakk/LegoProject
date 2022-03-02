@@ -6,6 +6,7 @@ import lejos.robotics.Color;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 
 public class RobotMoves implements Runnable {
@@ -13,19 +14,22 @@ public class RobotMoves implements Runnable {
 	private static EV3ColorSensor cs = new EV3ColorSensor(SensorPort.S3);
 	protected static EV3LargeRegulatedMotor motorR = new EV3LargeRegulatedMotor(MotorPort.A);
 	protected static EV3LargeRegulatedMotor motorL = new EV3LargeRegulatedMotor(MotorPort.B);
-
-	ChassisW chassis = new ChassisW();
 	
+	Wheel wheel1 = WheeledChassis.modelWheel(motorR, 81.6).offset(-70);
+	Wheel wheel2 = WheeledChassis.modelWheel(motorL, 81.6).offset(70);
+	//ChassisWhe chassis = new ChassisWhe(motorR,motorL);
+	ChassisWhe chassis = new ChassisWhe(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
+	MovePilot chas = new MovePilot(chassis);
 	private static float[] sample;
 	private DataTransfer DTObj;
 
 	// Ensin 8, logiikka toimii mutta väistää liian nopeasti mustalta takaisin,
 	// tökkii
 	// 11 toimii myös sisäradalla, mutta vähän huonommin kuin ulkokaarella
-	private static int tooBlack = 6;
+	private static float tooBlack = 6;
 	// ensin 33, kävi liikaa valkoisella, logiikka toimii kuitenkin, tökkivästi
 	// 30 toimii myös sisäradalla, mutta vähän huonommin kuin ulkokaarella
-	private static int tooWhite = 26;
+	private static float tooWhite = 26;
 	private static int fastest = 250;
 	private static int round = 0;
 
