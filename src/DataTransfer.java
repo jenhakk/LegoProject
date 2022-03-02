@@ -6,10 +6,19 @@ public class DataTransfer {
 
 	public boolean obstacleDetected = false;
 	public int status = 1;
-	private int round = 0;
+	private int obsCount = 0;
+	public boolean lineDetected = false;
 	
 	
 	//private static boolean lineDetected = false;
+
+	public boolean isLineDetected() {
+		return lineDetected;
+	}
+
+	public void setLineDetected(boolean lineDetected) {
+		this.lineDetected = lineDetected;
+	}
 
 	/**
 	 * Method that checks boolean value of obstacleDetected
@@ -44,18 +53,21 @@ public class DataTransfer {
 	}
 
 	/**
-	 * Method that gets round int value
+	 * Method that get the count of obstacles encountered
 	 *
 	 */
-	public int getRound() {
-		return round;
+	public int getObsCount() {
+		return obsCount;
 	}
 
 	/**
-	 * Method that sets int value of status
+	 * Method that sets the count of obstacles encountered
 	 *
 	 */
-	public void setRound(int round) {
-		this.round = round;
+	public void setObsCount(int obsCount) {
+		this.obsCount = obsCount;
 	}
+
+	
+
 }
