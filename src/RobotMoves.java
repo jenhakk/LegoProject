@@ -116,10 +116,10 @@ public class RobotMoves implements Runnable {
 	 * returns the first index from the list.
 	 *
 	 */
-	public static int getRed() {
+	public static float getRed() {
 
 		cs.fetchSample(sample, 0);
-		int value = (int) (sample[0] * 100);
+		float value = (float) (sample[0] * 100);
 
 		return value;
 
