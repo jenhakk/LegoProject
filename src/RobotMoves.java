@@ -15,10 +15,10 @@ public class RobotMoves implements Runnable {
 	protected static EV3LargeRegulatedMotor motorR = new EV3LargeRegulatedMotor(MotorPort.A);
 	protected static EV3LargeRegulatedMotor motorL = new EV3LargeRegulatedMotor(MotorPort.B);
 	
-	Wheel wheel1 = WheeledChassis.modelWheel(motorR, 81.6).offset(-70);
-	Wheel wheel2 = WheeledChassis.modelWheel(motorL, 81.6).offset(70);
+	Wheel left = WheeledChassis.modelWheel(motorL, 55).offset(50);
+	Wheel right = WheeledChassis.modelWheel(motorR, 55).offset(-50);
 	//ChassisWhe chassis = new ChassisWhe(motorR,motorL);
-	ChassisWhe chassis = new ChassisWhe(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL); 
+	ChassisWhe chassis = new ChassisWhe(new Wheel[] { left, right }, WheeledChassis.TYPE_DIFFERENTIAL); 
 	private static float[] sample;
 	private DataTransfer DTObj;
 
