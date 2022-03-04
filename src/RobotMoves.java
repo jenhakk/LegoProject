@@ -1,3 +1,4 @@
+import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
@@ -8,6 +9,7 @@ import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
+import lejos.utility.Stopwatch;
 
 public class RobotMoves implements Runnable {
 
@@ -19,27 +21,30 @@ public class RobotMoves implements Runnable {
 	Wheel right = WheeledChassis.modelWheel(motorR, 55).offset(-50);
 
 	Chassis chassis = new WheeledChassis(new Wheel[] { left, right }, WheeledChassis.TYPE_DIFFERENTIAL);
-		
+
 	MovePilot pilot = new MovePilot(chassis);
+	Stopwatch timer = new Stopwatch();
+	
 
 	private static float[] sample;
 	private DataTransfer DTObj;
-
-	// Ensin 8, logiikka toimii mutta väistää liian nopeasti mustalta takaisin,
-	// tökkii
-	// 11 toimii myös sisäradalla, mutta vähän huonommin kuin ulkokaarella
 	private static double tooBlack = 5.5;
-	// ensin 33, kävi liikaa valkoisella, logiikka toimii kuitenkin, tökkivästi
-	// 30 toimii myös sisäradalla, mutta vähän huonommin kuin ulkokaarella
-	private static double tooWhite = 26;
-	//ulkoreunan vauhti 250, sisäreunan vauhti 230
-	private static int fastest = 250;
+	private static double tooWhite = 28;
+	// ulkoreunan vauhti 245, sisäreunan vauhti 230
+	private static int fastest = 245;
 	private static int round = 0;
+	private static int time = 0;
 
 	public RobotMoves(DataTransfer DT) {
 		this.DTObj = DT;
 
 	}
+	
+	//Timer tsekkaus
+	//Jos eksyy viivalta muulloin kuin esteen ohituksen jälkeen niin miten käy?!
+	//Äänien etsintä ja koodaus
+	//Sisäpuolen rata, miten toimii?
+	//ohjelman pysäytys nappulasta
 
 	@Override
 	public void run() {
@@ -47,34 +52,37 @@ public class RobotMoves implements Runnable {
 		cs.setFloodlight(true);
 		cs.setCurrentMode("Red");
 
-		// value in RGBs, 0 means zero light, 255 means maximum light
+		// arvo 0 on tummin, 100 on valoisin
 		sample = new float[cs.sampleSize()];
 
 		while (true) {
+			timer.reset();
 			// 1. ALOITUS JA 6. ELI KUN TAKAISIN RADALLA
 			// Kun status on 1 eli liikkuu
 			// Normaali eteneminen viivalla
 			if (DTObj.getStatus() == 1 && DTObj.isObstacleDetected() == false) {
 
 				// Aloitus ulkoreunan puolelta
-				// Kun robo menee viivan rajalla 50/50 ja eksyy valkoiselle liikaa, korjataan
-				// vasemmalle
+				// Kun robo menee viivan rajalla 50/50 ja eksyy valkoiselle liikaa, korjataan vasemmalle
 				if (getRed() >= tooWhite) {
 
-					//ulkoreuna -> korjataan vasemmalle motorL.setSpeed(145), motorR.setSpeed(fastest)
-					//sisäreuna -> korjataan oikealle motorR.setSpeed(130), motorL.setSpeed(fastest)
+					// ulkoreuna -> korjataan vasemmalle motorL.setSpeed(145),
+					// motorR.setSpeed(fastest)
+					// sisäreuna -> korjataan oikealle motorR.setSpeed(130),
+					// motorL.setSpeed(fastest)
 					motorL.setSpeed(145);
 					motorR.setSpeed(fastest);
 					motorL.forward();
 					motorR.forward();
 
-					// Aloitus ulkoreunan puolelta
-					// Kun robo menee viivan rajalla 50/50 ja eksyy liikaa mustalle, korjataan
-					// oikealle
+				// Aloitus ulkoreunan puolelta
+				// Kun robo menee viivan rajalla 50/50 ja eksyy liikaa mustalle, korjataan oikealle
 				} else if (getRed() <= tooBlack) {
 
-					//ulkoreuna -> korjataan oikealle motorR.setSpeed(145), motorL.setSpeed(fastest)
-					//sisäreuna -> korjataan vasemmalle motorL.setSpeed(130), motorR.setSpeed(fastest)
+					// ulkoreuna -> korjataan oikealle motorR.setSpeed(145),
+					// motorL.setSpeed(fastest)
+					// sisäreuna -> korjataan vasemmalle motorL.setSpeed(130),
+					// motorR.setSpeed(fastest)
 					motorR.setSpeed(145);
 					motorL.setSpeed(fastest);
 					motorR.forward();
@@ -86,64 +94,54 @@ public class RobotMoves implements Runnable {
 					motorR.forward();
 					motorL.forward();
 				}
-				// 2. ESTE HAVAITTU
-				// Jos status on 0 ja este havaittu, kierrä este
+			// 2. ESTE HAVAITTU
+			// Jos status on 0 ja este havaittu, kierrä este
 			} else if (DTObj.getStatus() == 0 && DTObj.isObstacleDetected() == true) {
-				// 3. SIIRRYTÄÄN METODIIN
 				
+				// 3. SIIRRYTÄÄN METODIIN clearObstacle
 				if (round == 0) {
 					clearObstacle();
 					round++;
-					
+
 				} else {
 					motorR.stop();
 					motorL.stop();
-					//System.exit(0);
-					
+					time = timer.elapsed();
+					System.out.println("Time: " + time/100.0F + " seconds");
+					Delay.msDelay(5000);
+					System.exit(0);
+
 				}
-				
 
-				// 4. KATSOTAAN METODILLA OLLAANKO VIIVALLA, KOTONA EI OLTU :D
+				// 4. KATSOTAAN METODILLA OLLAANKO VIIVALLA
 				detectLine();
-				System.out.println(detectLine());
-				System.out.println(getRed());
+				// System.out.println(detectLine());
+				// System.out.println(getRed());
 
-				// 4. EI SIIS PÄÄSTY TÄHÄN
+				
 				// Jos viiva havaittu, käännä oikealle
 				if (DTObj.isLineDetected() == true) {
-					System.out.println("line detected true");
-					//searchLine();
-					System.out.println("seuraavaksi vauhti 50");
-					motorR.setSpeed(50);
-					motorL.setSpeed(50);
-					motorR.forward();
-					motorL.forward();
-					System.out.println("onko vauhti 50?");
-//					chassis2.setLinearSpeed(50);
-					//ulkoreuna
-					//chassis.rotate(-80);
-					//sisäreuna
-//					chassis2.rotate(80);
-//					chassis2.waitComplete();
-					// DTObj.setStatus(1);
 
-					// 5. VAAN HYPÄTTIIN SUORAAN TÄHÄN -> searchLine()
-					// jos viivaa ei ole havaittu, etsi viivaa searchLine() metodilla
+					System.out.println("line detected true");
+					pilot.setAngularSpeed(60);
+					pilot.rotate(-30);
+					searchLine();
+
+				// 5. VAAN HYPÄTTIIN SUORAAN TÄHÄN -> searchLine()
+				// jos viivaa ei ole havaittu, etsi viivaa searchLine() metodilla
 				} else {
 					System.out.println("ollaanko searchissa?");
-//					chassis2.setLinearSpeed(50);
-					//ulkoreuna
-					//chassis.rotate(-60);
-					//sisäreuna
-//					chassis2.rotate(60);
-//					chassis2.waitComplete();
 					searchLine();
 				}
 
 			} else {
-				
+
 				motorR.stop();
 				motorL.stop();
+			}
+			while (Button.getButtons() != 0) {
+				break;
+
 			}
 		}
 
@@ -163,6 +161,11 @@ public class RobotMoves implements Runnable {
 //
 //	}
 
+	/**
+	 * Method that gets light values in to list, changes them to doubles (*100) and
+	 * returns the first index from the list.
+	 *
+	 */
 	public static double getRed() {
 
 		cs.fetchSample(sample, 0);
@@ -172,10 +175,14 @@ public class RobotMoves implements Runnable {
 
 	}
 
+	/**
+	 * Method that checks if values from color sensor are <= than tooBlack values and changes lineDetected to boolean, returns detectLine value
+	 *
+	 */
 	public boolean detectLine() {
 		boolean detectLine = false;
 
-		if (getRed() <= 9) {
+		if (getRed() <= tooBlack) {
 			DTObj.setLineDetected(true);
 			detectLine = true;
 
@@ -188,87 +195,96 @@ public class RobotMoves implements Runnable {
 
 	}
 
-	// 3. JATKUU KUNNES ESTE ON KIERRETTY
+	/**
+	 * Method that executes an arc around the obstacle. If detectLine-method returns false, robot makes a turn to the right and then an arc. 
+	 * If line is detected in the middle of arc, robot stops. ObstacleDetected is set to false.
+	 */
+	
 	public void clearObstacle() {
 		// Tehdään kaari ja asetetaan obstacleDetected > false
 
 		while (detectLine() == false) {
-			//ulkoreuna
-			System.out.println("este");
-			chassis.setAngularSpeed(60);
-			chassis.rotate(-70);
-			Delay.msDelay(1500);
-//			chassis.setLinearSpeed(95);
-//			chassis.arc(340, 78);
-//			chassis.waitComplete();
-			pilot.setLinearSpeed(95);
-			pilot.arc(340, 130, detectLine());
-			System.out.println("este ohitettu");
-			DTObj.setObstacleDetected(false);
-			break;
-			
-			//sisäreuna
-//			System.out.println("este");
-//			chassis.setAngularSpeed(60);
-//			chassis.rotate(45);
-//			Delay.msDelay(1500);
-//			chassis.setLinearSpeed(95);
-//			chassis.arc(-340, 78);
-//			chassis.waitComplete();
-//			System.out.println("este ohitettu");
-//			DTObj.setObstacleDetected(false);
-			
-//			break;
-			
-			
-			
+			// ulkoreuna
 
+			pilot.setAngularSpeed(60);
+			pilot.rotate(-60);
+			// Delay.msDelay(1500);
+			pilot.setLinearSpeed(95);
+			pilot.arc(300, 200, true);
+			while (pilot.isMoving()) {
+				if (detectLine() == true) {
+					pilot.stop();
+					System.out.println("stop");
+				}
+			}
+
+			DTObj.setObstacleDetected(false);
+
+			// break;
+
+			// sisäreuna
+//			pilot.setAngularSpeed(60);
+//			pilot.rotate(60);
+//			// Delay.msDelay(1500);
+//			pilot.setLinearSpeed(95);
+//			pilot.arc(-300, 200, true);
+//			while (pilot.isMoving()) {
+//				if (detectLine() == true) {
+//					pilot.stop();
+//					System.out.println("stop");
+//				}
+//			}
+//
+//			DTObj.setObstacleDetected(false);
 		}
 	}
 
+	/**
+	 * Method that tries to search back to line following. It uses detectLine(): If it returns true, motors stop, status is set to 1 (moving) and robot returns to following the line.
+	 * If it returns false: pilot is used to make a waving move, first to the right and then to left. If detectLine() returns true (line is found), robot stops and breaks the loop.
+	 *
+	 */
 	// 5. JATKUU: JOS detectLine() ILMOITTAA ETTÄ OLLAAN VIIVALLA, MENNÄÄN EKAAN
 	// IFIIN JA PÄÄSTÄÄN TAKAISIN VIIVANSEURAUKSEEN
 	public void searchLine() {
 		// niin kauan kun detectLine() antaa arvon false eli getRed() on >= kuin 6
 		// tehdään kääntymisliikettä
 		while (true) {
-			System.out.println(getRed());
+			
 			detectLine();
 
 			if (DTObj.isLineDetected() == true) {
-				System.out.println("viiva");
 				DTObj.setLineDetected(true);
-				// chassis.setLinearSpeed(100);
 				motorL.stop();
 				motorR.stop();
-
-				// Delay.msDelay(1000);
 				DTObj.setStatus(1);
 				break;
 
-				// KÄÄNTYY ENSIN VASEMMALLE JA SITTEN OIKEALLE JOS VIIVAA EI OLE, NÄMÄ
-				// KÄÄNTYMISET VOISI VIELÄ EROTELLA JA TSEKATA VÄLISSÄ OLLAANKO VIIVALLA,
-				// MYÖS ISOMMAT KÄÄNNÖKSET VOISI TEHDÄ
+			//start searching the line
 			} else if (DTObj.isLineDetected() == false) {
-				System.out.println("ei");
-				// kääntyy vasemmalle
-				motorL.setSpeed(35);
-				motorR.setSpeed(100);
-				motorL.forward();
-				motorR.forward();
-				Delay.msDelay(1500);
+				
+				pilot.setLinearSpeed(70);
+				pilot.travelArc(100, 150, true);
 
-				if (detectLine() == false) {
-					// kääntyy oikealle
-					motorR.setSpeed(35);
-					motorL.setSpeed(100);
-					motorL.forward();
-					motorR.forward();
-					Delay.msDelay(2250);
+				while (pilot.isMoving()) {
+					if (detectLine() == true) {
+						pilot.stop();
+						break;
+					}
+				}
+
+				//pilot.setLinearSpeed(70);
+				pilot.travelArc(-100, 150, true);
+
+				while (pilot.isMoving()) {
+					if (detectLine() == true) {
+						pilot.stop();
+						break;
+					}
 
 				}
-			}
 
+			}
 		}
 	}
 }
