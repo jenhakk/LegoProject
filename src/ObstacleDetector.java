@@ -1,6 +1,3 @@
-import lejos.hardware.Button;
-import lejos.hardware.Sound;
-import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.*;
 import lejos.robotics.SampleProvider;
@@ -12,13 +9,17 @@ import lejos.robotics.SampleProvider;
 public class ObstacleDetector implements Runnable {
 
 	private static EV3UltrasonicSensor us;
-	private static final int securityDistance = 20;
+	private static final int securityDistance = 25;
 	private static int distanceValue = 0;
+	
 
 	private DataTransfer DTObj;
 
+
 	public ObstacleDetector(DataTransfer DT) {
 		this.DTObj = DT;
+	
+		
 		us = new EV3UltrasonicSensor(SensorPort.S4);
 	}
 

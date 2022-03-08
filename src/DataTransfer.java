@@ -8,9 +8,27 @@ public class DataTransfer {
 	public int status = 1;
 	private int obsCount = 0;
 	public boolean lineDetected = false;
+	public boolean soundPlayed = false;
+	public boolean started = false;
 	
 	
 	//private static boolean lineDetected = false;
+
+	public boolean isStarted() {
+		return started;
+	}
+
+	public void setStarted(boolean started) {
+		this.started = started;
+	}
+
+	public boolean isSoundPlayed() {
+		return soundPlayed;
+	}
+
+	public void setSoundPlayed(boolean soundPlayed) {
+		this.soundPlayed = soundPlayed;
+	}
 
 	public boolean isLineDetected() {
 		return lineDetected;
