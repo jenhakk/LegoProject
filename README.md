@@ -4,8 +4,9 @@
 
 Team: [Jenna Hakkarainen](https://github.com/jenhakk), [Amanda Karjalainen](https://github.com/amakarj), [Anna-Maria Palm](https://github.com/A-d-f) 
 
-![roberto](https://user-images.githubusercontent.com/75015030/208305557-80459835-a07d-4fee-8d2f-de2dbd618304.png)
+You can check the video of our robot's journey from [here](https://youtu.be/hL_jN5R5qOU).
 
+<img width="300" alt="robot" src="https://user-images.githubusercontent.com/75015030/208305557-80459835-a07d-4fee-8d2f-de2dbd618304.png">
 
 
 ## Description
