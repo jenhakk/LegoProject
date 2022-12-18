@@ -2,7 +2,8 @@
  
 **This repository is created for a programming project for Häme University of Applied Sciences.**
 
-Team:
+Team: [Jenna Hakkarainen](https://github.com/jenhakk), [Amanda Karjalainen](https://github.com/amakarj), [Anna-Maria Palm](https://github.com/A-d-f) 
+
 
 ## Description
 
