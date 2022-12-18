@@ -1,37 +1,49 @@
+import java.io.File;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.utility.Delay;
 
 /**
- * Robot's main class and main thread
+ * Date: Mar 08-2022 This is an application for Lego Mindstorms EV3 robot that
+ * follows line by reading light values using color sensor and detects obstacles
+ * using ultrasonic sensor. It has been built using two extra threads and a
+ * class that transfers data between threads. It plays .wav file in the
+ * beginning of the app.
+ * 
+ * @author jenna hakkarainen, amanda karjalainen, anna-maria palm
+ * @version 1.0
  *
  */
 public class RoboRun {
 
+	/**
+	 * Main method of this application
+	 * 
+	 * @param args array of String arguments
+	 */
+
 	public static void main(String[] args) {
 
 		DataTransfer DT = new DataTransfer();
-		LineFollower LFObj = new LineFollower(DT);
+		RobotMoves RMObj = new RobotMoves(DT);
 		ObstacleDetector ODObj = new ObstacleDetector(DT);
-		ObstacleClearance OCObj = new ObstacleClearance(DT, LFObj);
-		
-		DataTransfer DTObj;
-		
 
+		File beginning = new File("Beginning.wav");
+
+		// Wait Enter to be pushed and delay 5 seconds
 		System.out.println("Press Enter to start");
 		Button.ENTER.waitForPress();
-
 		Delay.msDelay(5000);
 
-		Thread Follow = new Thread(LFObj);
+		// Create and start threads
+		Thread Moves = new Thread(RMObj);
 		Thread Detect = new Thread(ODObj);
-		Thread Clear = new Thread(OCObj);
 
-		//Detect.setPriority(9);
-		//Follow.setPriority(10);
-
-		Follow.start();
+		Moves.start();
 		Detect.start();
-		Clear.start();
+
+		//Play sound in the beginning of the program
+		Sound.playSample(beginning);
 
 		while (Button.getButtons() != 0) {
 			break;
@@ -39,7 +51,5 @@ public class RoboRun {
 		}
 
 	}
-	
-	
 
 }
