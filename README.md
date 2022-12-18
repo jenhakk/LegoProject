@@ -4,6 +4,9 @@
 
 Team: [Jenna Hakkarainen](https://github.com/jenhakk), [Amanda Karjalainen](https://github.com/amakarj), [Anna-Maria Palm](https://github.com/A-d-f) 
 
+![roberto](https://user-images.githubusercontent.com/75015030/208305557-80459835-a07d-4fee-8d2f-de2dbd618304.png)
+
+
 
 ## Description
 
